@@ -66,7 +66,28 @@ model.add(Dropout(0.4))
 model.add(Flatten())
 model.add(Dense(num_classes, activation='softmax'))
 
-model.summary()
+#model.summary()
+
+model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
+
+batch_size = 32
+epochs = 34
+
+history = model.fit(x_train, y_train, batch_size=batch_size, epochs=epochs, validation_data=(x_valid, y_valid), verbose=2, shuffle=True)
+
+plt.plot(history.history['accuracy'], label='Train')
+plt.plot(history.history['val_accuracy'], label='Validation')
+plt.title('Model Accuracy')
+plt.ylabel('Accuracy')
+plt.xlabel('Epoch')
+plt.legend()
+plt.show()
+
+model.evaluate(x_test, y_test) 
+
+
+
+
 
 
 
