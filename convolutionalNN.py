@@ -32,18 +32,34 @@ model.add(Dense(256, activation='relu'))
 model.add(Dropout(0.5))
 model.add(Dense(10, activation='softmax'))
 
-model.summary()
+#model.summary()
 
 model.compile(optimizer='rmsprop',
               loss='categorical_crossentropy',
               metrics=['accuracy'])
 
+early = tf.keras.callbacks.EarlyStopping(monitor='accuracy', patience=2)
+
+checkpointer = tf.keras.callbacks.ModelCheckpoint(
+          filepath='convolutional_model.hdf5',
+          verbose=1,
+          monitor='accuracy',
+          save_best_only=True
+          )
+
 model.fit(train_images,
           train_labels,
-          epochs=10, batch_size=64)
+          epochs=10, 
+          #callbacks=[early],
+          callbacks=[checkpointer],
+          batch_size=64)
 
 test_loss, test_acc = model.evaluate(test_images, test_labels, verbose=0)
 
 print('test accuracy:', test_acc) #0.90
 print('test loss:', test_loss) #0.37
 
+model2 = model
+model2.load_weights('./convolutional_model.hdf5')
+
+model2.evaluate(test_images, test_labels)
